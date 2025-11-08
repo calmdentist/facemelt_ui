@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "@/providers/Providers";
 import Navbar from "@/components/Navbar";
-import { decimaMono } from "./fonts";
+import { geistMono } from "./fonts";
 import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${decimaMono.variable} font-mono antialiased bg-background text-foreground`}
+        className={`${geistMono.variable} font-mono antialiased bg-background text-foreground`}
       >
         <Providers>
           <div className="flex flex-col min-h-screen">

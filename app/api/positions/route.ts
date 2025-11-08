@@ -16,12 +16,12 @@ const PROGRAM_ID = new PublicKey(FACEMELT_PROGRAM_ID);
 interface PositionAccount {
   authority: PublicKey;
   pool: PublicKey;
-  positionVault: PublicKey;
   isLong: boolean;
   collateral: typeof BN;
   leverage: number;
-  entryPrice: typeof BN;
   size: typeof BN;
+  deltaK: typeof BN;
+  entryFundingAccumulator: typeof BN;
   nonce: typeof BN;
   bump: number;
 }
@@ -79,12 +79,12 @@ export async function GET(request: Request) {
         address: position.publicKey.toString(),
         authority: positionAccount.authority.toString(),
         pool: positionAccount.pool.toString(),
-        positionVault: positionAccount.positionVault.toString(),
         isLong: positionAccount.isLong,
         collateral: positionAccount.collateral.toString(),
         leverage: positionAccount.leverage,
-        entryPrice: positionAccount.entryPrice.toString(),
         size: positionAccount.size.toString(),
+        deltaK: positionAccount.deltaK.toString(),
+        entryFundingAccumulator: positionAccount.entryFundingAccumulator.toString(),
         nonce: positionAccount.nonce.toString(),
       };
     });

@@ -32,7 +32,9 @@ interface LaunchTokenParams {
   symbol: string;
   description: string;
   metadataUri: string;
-  virtualSolReserve: number;
+  solAmount: number;
+  fundingConstantC?: number;
+  liquidationDivergenceThreshold?: number;
   wallet: WalletContextState;
 }
 
@@ -41,7 +43,9 @@ export async function createLaunchTokenTransaction({
   symbol,
   description,
   metadataUri,
-  virtualSolReserve,
+  solAmount,
+  fundingConstantC,
+  liquidationDivergenceThreshold,
   wallet
 }: LaunchTokenParams): Promise<{ transaction: Transaction; mintKeypair: Keypair }> {
   if (!wallet.publicKey) {
@@ -55,7 +59,7 @@ export async function createLaunchTokenTransaction({
   // Create pool PDA
   const [pool, poolBump] = PublicKey.findProgramAddressSync(
     [Buffer.from('pool'), mintKeypair.publicKey.toBuffer()],
-    new PublicKey('DjSx4kWjgjUQ2QDjYcfJooCNhisSC2Rk3uzGkK9fJRbb')
+    new PublicKey('5cZM87xG3opyuDjBedCpxJ6mhDyztVXLEB18tcULCmmW')
   );
 
   console.log('Pool address:', pool.toBase58());
@@ -92,15 +96,17 @@ export async function createLaunchTokenTransaction({
   } as Wallet;
 
   const provider = new AnchorProvider(connection, anchorWallet, {});
-  const program = new Program(IDL as Idl, new PublicKey('DjSx4kWjgjUQ2QDjYcfJooCNhisSC2Rk3uzGkK9fJRbb'), provider);
+  const program = new Program(IDL as Idl, new PublicKey('5cZM87xG3opyuDjBedCpxJ6mhDyztVXLEB18tcULCmmW'), provider);
 
   // Add launch instruction using Anchor
   const launchIx = await program.methods
     .launch(
-      new BN(virtualSolReserve * LAMPORTS_PER_SOL),
+      new BN(solAmount * LAMPORTS_PER_SOL),
       name,
       symbol,
-      metadataUri
+      metadataUri,
+      fundingConstantC ? new BN(fundingConstantC) : null,
+      liquidationDivergenceThreshold ? new BN(liquidationDivergenceThreshold) : null
     )
     .accounts({
       authority: wallet.publicKey,

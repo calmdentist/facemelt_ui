@@ -7,7 +7,7 @@ dotenv.config();
 export const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL || "http://127.0.0.1:8899";
 
 // Facemelt program details
-export const FACEMELT_PROGRAM_ID = "DjSx4kWjgjUQ2QDjYcfJooCNhisSC2Rk3uzGkK9fJRbb";
+export const FACEMELT_PROGRAM_ID = "5cZM87xG3opyuDjBedCpxJ6mhDyztVXLEB18tcULCmmW";
 export const USDC_TOKEN_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 
 // Feature flags

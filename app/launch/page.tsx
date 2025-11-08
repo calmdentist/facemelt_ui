@@ -101,7 +101,7 @@ export default function LaunchPage() {
         symbol: tokenTicker,
         description: 'Token launched on Facemelt',
         metadataUri,
-        virtualSolReserve: parseFloat(virtualLiquidity),
+        solAmount: parseFloat(virtualLiquidity),
         wallet
       });
 
@@ -196,7 +196,7 @@ export default function LaunchPage() {
                   </div>
                   
                   <div className="space-y-1.5">
-                    <label className="block text-sm text-white font-bold font-mono">Initial Virtual Liquidity (SOL)</label>
+                    <label className="block text-sm text-white font-bold font-mono">Initial SOL Amount</label>
                     <div className="relative">
                       <input
                         type="text"
@@ -211,7 +211,7 @@ export default function LaunchPage() {
                       <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white font-bold font-mono text-sm">SOL</div>
                     </div>
                     <p className="text-xs text-[#b5b5b5] font-bold">
-                      Higher virtual liquidity = less price impact per trade
+                      Initial liquidity for the pool
                     </p>
                   </div>
 

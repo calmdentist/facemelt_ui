@@ -10,7 +10,8 @@ import { createSwapTransaction, createLeverageSwapTransaction } from '@/txns/swa
 import { usePriorityFeeTransaction } from '@/hooks/usePriorityFeeTransaction';
 import { showTransactionToast } from '@/utils/transactionToast';
 import { toast } from 'sonner';
-import { calculateExpectedOutput, calculatePoolPrice, calculateRealReservesPrice, getPoolReserves, formatTokenAmount } from '@/utils/poolCalculations';
+import { calculateExpectedOutput, calculatePoolPrice, calculateRealReservesPrice, getPoolReserves, formatTokenAmount, calculateFundingRate } from '@/utils/poolCalculations';
+import type { PoolReserves } from '@/utils/poolCalculations';
 import PositionsPanel from './PositionsPanel';
 
 interface TokenState {
@@ -95,14 +96,7 @@ export default function SwapInterface({ initialOutputToken }: SwapInterfaceProps
   const { sendTransactionWithPriorityFee } = usePriorityFeeTransaction();
 
   // Add state for pool reserves
-  const [poolReserves, setPoolReserves] = useState<{
-    solReserve: number;
-    virtualSolReserve: number;
-    tokenYReserve: number;
-    virtualTokenYReserve: number;
-    leveragedSolAmount: number;
-    leveragedTokenYAmount: number;
-  } | null>(null);
+  const [poolReserves, setPoolReserves] = useState<PoolReserves | null>(null);
 
   // Fetch SOL price
   useEffect(() => {
@@ -489,15 +483,30 @@ export default function SwapInterface({ initialOutputToken }: SwapInterfaceProps
       {poolReserves && (
         <div className="text-xs font-mono text-[#b5b5b5] px-2 mt-4 space-y-1">
           <div className="flex justify-between items-center">
-            <span>SOL Reserves (real / virtual / debt):</span>
+            <span>SOL Reserves (real / effective):</span>
             <span className="text-white">
-              {formatTokenAmount(poolReserves.solReserve / LAMPORTS_PER_SOL)} / {formatTokenAmount(poolReserves.virtualSolReserve / LAMPORTS_PER_SOL)} / {formatTokenAmount(poolReserves.leveragedSolAmount / LAMPORTS_PER_SOL)}
+              {formatTokenAmount(poolReserves.solReserve / LAMPORTS_PER_SOL)} / {formatTokenAmount(poolReserves.effectiveSolReserve / LAMPORTS_PER_SOL)}
             </span>
           </div>
           <div className="flex justify-between items-center">
-            <span>{outputTokenSymbol} Reserves (real / virtual / debt):</span>
+            <span>{outputTokenSymbol} Reserves (real / effective):</span>
             <span className="text-white">
-              {formatTokenAmount(poolReserves.tokenYReserve / 1e6)} / {formatTokenAmount(poolReserves.virtualTokenYReserve / 1e6)} / {formatTokenAmount(poolReserves.leveragedTokenYAmount / 1e6)}
+              {formatTokenAmount(poolReserves.tokenReserve / 1e6)} / {formatTokenAmount(poolReserves.effectiveTokenReserve / 1e6)}
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span>Total Debt (Longs / Shorts):</span>
+            <span className="text-white">
+              {formatTokenAmount(poolReserves.totalDeltaKLongs / 1e18)} / {formatTokenAmount(poolReserves.totalDeltaKShorts / 1e18)}
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span>LP Funding Rate:</span>
+            <span className="text-[#00ffb3]">
+              {(() => {
+                const fundingRate = calculateFundingRate(poolReserves);
+                return `${fundingRate.perDay.toFixed(4)}% / day (${fundingRate.perAnnum.toFixed(2)}% / year)`;
+              })()}
             </span>
           </div>
         </div>

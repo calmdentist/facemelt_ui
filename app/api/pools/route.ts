@@ -112,25 +112,27 @@ export async function GET(request: Request) {
 
     // Calculate price
     const poolAccount = await program.account.pool.fetch(pool);
-    const solReserve = Number(poolAccount.lamports);
-    const virtualSolReserve = Number(poolAccount.virtualSolAmount);
-    const tokenYReserve = Number(poolAccount.tokenYAmount);
-    const virtualTokenYReserve = Number(poolAccount.virtualTokenYAmount);
-    const leveragedSolAmount = Number(poolAccount.leveragedSolAmount);
-    const leveragedTokenYAmount = Number(poolAccount.leveragedTokenYAmount);
+    const solReserve = Number(poolAccount.solReserve);
+    const effectiveSolReserve = Number(poolAccount.effectiveSolReserve);
+    const tokenReserve = Number(poolAccount.tokenReserve);
+    const effectiveTokenReserve = Number(poolAccount.effectiveTokenReserve);
+    const totalDeltaKLongs = Number(poolAccount.totalDeltaKLongs);
+    const totalDeltaKShorts = Number(poolAccount.totalDeltaKShorts);
+    const fundingConstantC = Number(poolAccount.fundingConstantC);
     
-    const price = (solReserve + virtualSolReserve) / (tokenYReserve + virtualTokenYReserve);
+    const price = effectiveSolReserve / effectiveTokenReserve;
 
     return NextResponse.json({ 
       pool: pool.toBase58(),
       metadata,
       price,
       solReserve,
-      virtualSolReserve,
-      tokenYReserve,
-      virtualTokenYReserve,
-      leveragedSolAmount,
-      leveragedTokenYAmount
+      effectiveSolReserve,
+      tokenReserve,
+      effectiveTokenReserve,
+      totalDeltaKLongs,
+      totalDeltaKShorts,
+      fundingConstantC
     });
   } catch (error) {
     console.error('Error fetching pool:', error);

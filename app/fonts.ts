@@ -1,7 +1,7 @@
-import localFont from 'next/font/local';
+import { Geist_Mono } from 'next/font/google';
 
-export const decimaMono = localFont({
-  src: '../public/fonts/DecimaMonoPro.otf',
-  variable: '--font-decima-mono',
+export const geistMono = Geist_Mono({
+  subsets: ['latin'],
+  variable: '--font-geist-mono',
   display: 'swap',
 }); 

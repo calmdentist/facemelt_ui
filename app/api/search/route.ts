@@ -39,7 +39,7 @@ const DEFAULT_TOKENS = [
 ];
 
 // Cache for pools data
-let poolsCache: { tokenYMint: string; metadata?: { name: string; symbol: string; image: string } }[] = [];
+let poolsCache: { tokenMint: string; metadata?: { name: string; symbol: string; image: string } }[] = [];
 let lastFetchTime = 0;
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
@@ -74,10 +74,10 @@ export async function GET(request: Request) {
   // Create a map of unique token addresses from pools with their metadata
   const poolTokens = new Map(
     pools.map(pool => [
-      pool.tokenYMint,
+      pool.tokenMint,
       {
-        symbol: pool.metadata?.symbol || pool.tokenYMint.slice(0, 4).toUpperCase(),
-        address: pool.tokenYMint,
+        symbol: pool.metadata?.symbol || pool.tokenMint.slice(0, 4).toUpperCase(),
+        address: pool.tokenMint,
         type: 'token' as const,
         metadata: pool.metadata,
       },

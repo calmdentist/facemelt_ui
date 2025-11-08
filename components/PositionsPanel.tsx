@@ -18,7 +18,8 @@ interface RawPosition {
   size: string;
   collateral: string;
   leverage: number;
-  positionVault: string;
+  deltaK: string;
+  entryFundingAccumulator: string;
   nonce: number;
   isLong: boolean;
 }
@@ -29,7 +30,8 @@ interface TransformedPosition {
   rawSize: number;
   rawCollateral: number;
   leverage: number;
-  positionVault: string;
+  deltaK: string;
+  entryFundingAccumulator: string;
   nonce: number;
   isLong: boolean;
   formattedSize: string;
@@ -59,7 +61,8 @@ function transformPositions(positions: RawPosition[]): TransformedPosition[] {
       rawSize,
       rawCollateral,
       leverage,
-      positionVault: pos.positionVault,
+      deltaK: pos.deltaK,
+      entryFundingAccumulator: pos.entryFundingAccumulator,
       nonce: pos.nonce,
       isLong: pos.isLong,
       formattedSize,
@@ -84,11 +87,12 @@ export default function PositionsPanel({ isOpen, onClose, tokenYMint }: Position
   const [poolAddress, setPoolAddress] = useState<string | null>(null);
   const [poolData, setPoolData] = useState<{
     solReserve: number;
-    virtualSolReserve: number;
-    tokenYReserve: number;
-    virtualTokenYReserve: number;
-    leveragedSolAmount: number;
-    leveragedTokenYAmount: number;
+    effectiveSolReserve: number;
+    tokenReserve: number;
+    effectiveTokenReserve: number;
+    totalDeltaKLongs: number;
+    totalDeltaKShorts: number;
+    fundingConstantC: number;
   } | null>(null);
 
   const fetchPositions = useCallback(async () => {
@@ -122,11 +126,12 @@ export default function PositionsPanel({ isOpen, onClose, tokenYMint }: Position
         setPoolAddress(data.pool);
         setPoolData({
           solReserve: data.solReserve,
-          virtualSolReserve: data.virtualSolReserve,
-          tokenYReserve: data.tokenYReserve,
-          virtualTokenYReserve: data.virtualTokenYReserve,
-          leveragedSolAmount: data.leveragedSolAmount,
-          leveragedTokenYAmount: data.leveragedTokenYAmount
+          effectiveSolReserve: data.effectiveSolReserve,
+          tokenReserve: data.tokenReserve,
+          effectiveTokenReserve: data.effectiveTokenReserve,
+          totalDeltaKLongs: data.totalDeltaKLongs,
+          totalDeltaKShorts: data.totalDeltaKShorts,
+          fundingConstantC: data.fundingConstantC
         });
       } catch (error) {
         console.error('Error fetching token metadata:', error);

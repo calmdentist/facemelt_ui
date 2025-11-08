@@ -8,12 +8,15 @@ import { calculateMarketCap as calculateTokenMarketCap, calculateLiquidity } fro
 
 interface Token {
   address: string;
-  tokenYMint: string;
-  tokenYAmount: string;
-  virtualTokenYAmount: string;
-  lamports: string;
-  virtualSolAmount: string;
-  creationTimestamp: string;
+  tokenMint: string;
+  tokenReserve: string;
+  effectiveTokenReserve: string;
+  solReserve: string;
+  effectiveSolReserve: string;
+  totalDeltaKLongs: string;
+  totalDeltaKShorts: string;
+  fundingConstantC: string;
+  lastUpdateTimestamp: string;
   metadata?: {
     name: string;
     symbol: string;
@@ -137,12 +140,13 @@ export default function TokensTable() {
   const getMarketCap = (token: Token): number => {
     if (!solPrice) return 0;
     const reserves = {
-      solReserve: Number(token.lamports),
-      virtualSolReserve: Number(token.virtualSolAmount),
-      tokenYReserve: Number(token.tokenYAmount),
-      virtualTokenYReserve: Number(token.virtualTokenYAmount),
-      leveragedSolAmount: 0,
-      leveragedTokenYAmount: 0
+      solReserve: Number(token.solReserve),
+      effectiveSolReserve: Number(token.effectiveSolReserve),
+      tokenReserve: Number(token.tokenReserve),
+      effectiveTokenReserve: Number(token.effectiveTokenReserve),
+      totalDeltaKLongs: Number(token.totalDeltaKLongs),
+      totalDeltaKShorts: Number(token.totalDeltaKShorts),
+      fundingConstantC: Number(token.fundingConstantC)
     };
     const marketCapStr = calculateTokenMarketCap(reserves, solPrice);
     // Parse the market cap string (remove $ and M/K suffixes)
@@ -165,7 +169,7 @@ export default function TokensTable() {
 
   // Sort tokens for each section
   const newTokens = [...tokens]
-    .sort((a, b) => (Number(b.creationTimestamp) || 0) - (Number(a.creationTimestamp) || 0))
+    .sort((a, b) => (Number(b.lastUpdateTimestamp) || 0) - (Number(a.lastUpdateTimestamp) || 0))
     .slice(0, 10);
     
   const trendingTokens = [...tokens]
@@ -190,8 +194,8 @@ export default function TokensTable() {
               key={token.address}
               token={token}
               metric="Launched"
-              metricValue={formatTimeSince(Number(token.creationTimestamp) * 1000)}
-              onClick={() => router.push(`/trade/${token.tokenYMint}`)}
+              metricValue={formatTimeSince(Number(token.lastUpdateTimestamp) * 1000)}
+              onClick={() => router.push(`/trade/${token.tokenMint}`)}
             />
           ))}
         </div>
@@ -210,7 +214,7 @@ export default function TokensTable() {
               token={token}
               metric="24h Volume"
               metricValue={formatCurrency(token.volume24h || 0)}
-              onClick={() => router.push(`/trade/${token.tokenYMint}`)}
+              onClick={() => router.push(`/trade/${token.tokenMint}`)}
             />
           ))}
         </div>
@@ -229,7 +233,7 @@ export default function TokensTable() {
               token={token}
               metric="Market Cap"
               metricValue={formatCurrency(getMarketCap(token))}
-              onClick={() => router.push(`/trade/${token.tokenYMint}`)}
+              onClick={() => router.push(`/trade/${token.tokenMint}`)}
             />
           ))}
         </div>

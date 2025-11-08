@@ -4,13 +4,14 @@ import IDL from '@/idl/facemelt.json';
 import { connection } from '@/utils/connection';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 
-interface PoolReserves {
+export interface PoolReserves {
   solReserve: number;
-  virtualSolReserve: number;
-  tokenYReserve: number;
-  virtualTokenYReserve: number;
-  leveragedSolAmount: number;
-  leveragedTokenYAmount: number;
+  effectiveSolReserve: number;
+  tokenReserve: number;
+  effectiveTokenReserve: number;
+  totalDeltaKLongs: number;
+  totalDeltaKShorts: number;
+  fundingConstantC: number;
 }
 
 // Constants for decimals
@@ -19,26 +20,26 @@ const TOKEN_Y_DECIMALS = 6;
 export const TOKEN_Y_SUPPLY = 1_000_000_000; // 1 billion tokens
 
 export function calculatePoolPrice(reserves: PoolReserves): number {
-  const { solReserve, virtualSolReserve, tokenYReserve, virtualTokenYReserve } = reserves;
+  const { effectiveSolReserve, effectiveTokenReserve } = reserves;
   
-  // Convert to human readable numbers
-  const totalSol = (solReserve + virtualSolReserve) / LAMPORTS_PER_SOL;
-  const totalTokenY = (tokenYReserve + virtualTokenYReserve) / Math.pow(10, TOKEN_Y_DECIMALS);
+  // Convert to human readable numbers - using effective reserves for pricing
+  const effectiveSol = effectiveSolReserve / LAMPORTS_PER_SOL;
+  const effectiveToken = effectiveTokenReserve / Math.pow(10, TOKEN_Y_DECIMALS);
   
-  return totalSol / totalTokenY;
+  return effectiveSol / effectiveToken;
 }
 
 export function calculateRealReservesPrice(reserves: PoolReserves): number {
-  const { solReserve, tokenYReserve } = reserves;
+  const { solReserve, tokenReserve } = reserves;
   
   // Convert to human readable numbers
   const realSol = solReserve / LAMPORTS_PER_SOL;
-  const realTokenY = tokenYReserve / Math.pow(10, TOKEN_Y_DECIMALS);
+  const realToken = tokenReserve / Math.pow(10, TOKEN_Y_DECIMALS);
   
   // Avoid division by zero
-  if (realTokenY === 0) return 0;
+  if (realToken === 0) return 0;
   
-  return realSol / realTokenY;
+  return realSol / realToken;
 }
 
 export function calculateRawMarketCap(reserves: PoolReserves, solPrice: number): number {
@@ -47,9 +48,9 @@ export function calculateRawMarketCap(reserves: PoolReserves, solPrice: number):
 }
 
 export function calculateRawLiquidity(reserves: PoolReserves, solPrice: number): number {
-  const { solReserve, virtualSolReserve } = reserves;
-  const totalSol = (solReserve + virtualSolReserve) / LAMPORTS_PER_SOL;
-  return totalSol * 2 * solPrice;
+  const { effectiveSolReserve } = reserves;
+  const effectiveSol = effectiveSolReserve / LAMPORTS_PER_SOL;
+  return effectiveSol * 2 * solPrice;
 }
 
 export function formatNumber(value: number): string {
@@ -91,16 +92,16 @@ export function calculateExpectedOutput(
   inputAmount: number,
   isSolToTokenY: boolean
 ): number {
-  const { solReserve, virtualSolReserve, tokenYReserve, virtualTokenYReserve } = reserves;
+  const { effectiveSolReserve, effectiveTokenReserve } = reserves;
   
   // Convert input amount to raw units
   const rawInputAmount = isSolToTokenY 
     ? inputAmount * LAMPORTS_PER_SOL 
     : inputAmount * Math.pow(10, TOKEN_Y_DECIMALS);
   
-  // Use virtual reserves for calculations
-  const x = isSolToTokenY ? solReserve + virtualSolReserve : tokenYReserve + virtualTokenYReserve;
-  const y = isSolToTokenY ? tokenYReserve + virtualTokenYReserve : solReserve + virtualSolReserve;
+  // Use effective reserves for calculations
+  const x = isSolToTokenY ? effectiveSolReserve : effectiveTokenReserve;
+  const y = isSolToTokenY ? effectiveTokenReserve : effectiveSolReserve;
   
   // Constant product formula: (x + Δx)(y - Δy) = xy
   // Solving for Δy: Δy = (y * Δx) / (x + Δx)
@@ -116,7 +117,7 @@ export async function getPoolReserves(
   poolAddress: PublicKey
 ): Promise<PoolReserves> {
   // Create program instance
-  const program = new Program(IDL as Idl, new PublicKey('DjSx4kWjgjUQ2QDjYcfJooCNhisSC2Rk3uzGkK9fJRbb'), {
+  const program = new Program(IDL as Idl, new PublicKey('5cZM87xG3opyuDjBedCpxJ6mhDyztVXLEB18tcULCmmW'), {
     connection,
     publicKey: PublicKey.default
   });
@@ -125,12 +126,13 @@ export async function getPoolReserves(
   const poolAccount = await program.account.pool.fetch(poolAddress);
   
   return {
-    solReserve: Number(poolAccount.lamports),
-    virtualSolReserve: Number(poolAccount.virtualSolAmount),
-    tokenYReserve: Number(poolAccount.tokenYAmount),
-    virtualTokenYReserve: Number(poolAccount.virtualTokenYAmount),
-    leveragedSolAmount: Number(poolAccount.leveragedSolAmount),
-    leveragedTokenYAmount: Number(poolAccount.leveragedTokenYAmount)
+    solReserve: Number(poolAccount.solReserve),
+    effectiveSolReserve: Number(poolAccount.effectiveSolReserve),
+    tokenReserve: Number(poolAccount.tokenReserve),
+    effectiveTokenReserve: Number(poolAccount.effectiveTokenReserve),
+    totalDeltaKLongs: Number(poolAccount.totalDeltaKLongs),
+    totalDeltaKShorts: Number(poolAccount.totalDeltaKShorts),
+    fundingConstantC: Number(poolAccount.fundingConstantC)
   };
 }
 
@@ -159,6 +161,43 @@ export function calculatePositionEntryPrice(
   return entryRate * solPrice;
 }
 
+/**
+ * Calculate the LP funding rate based on the pool's leverage ratio
+ * @param reserves Pool reserves
+ * @returns Object containing funding rates per second, per day, and per annum (as percentages)
+ */
+export function calculateFundingRate(reserves: PoolReserves): {
+  perSecond: number;
+  perDay: number;
+  perAnnum: number;
+} {
+  const { effectiveSolReserve, effectiveTokenReserve, totalDeltaKLongs, totalDeltaKShorts, fundingConstantC } = reserves;
+  
+  // Calculate k_e (effective constant product)
+  const k_e = effectiveSolReserve * effectiveTokenReserve;
+  
+  // Calculate total delta k
+  const totalDeltaK = totalDeltaKLongs + totalDeltaKShorts;
+  
+  // If no leverage positions, funding rate is 0
+  if (totalDeltaK === 0 || k_e === 0) {
+    return { perSecond: 0, perDay: 0, perAnnum: 0 };
+  }
+  
+  // Calculate leverage ratio
+  const leverageRatio = totalDeltaK / k_e;
+  
+  // Calculate funding rate: C * (leverageRatio)^2
+  const fundingRatePerSecond = fundingConstantC * Math.pow(leverageRatio, 2);
+  
+  // Convert to percentage rates
+  const perSecond = fundingRatePerSecond * 100;
+  const perDay = perSecond * 86400; // 86400 seconds in a day
+  const perAnnum = perDay * 365;
+  
+  return { perSecond, perDay, perAnnum };
+}
+
 export function calculatePositionPnL({
   isLong,
   rawSize,
@@ -174,17 +213,17 @@ export function calculatePositionPnL({
   solPrice: number
 ): number {
   // Leverage is already scaled (not raw from contract)
-  // For long: collateral in SOL, size in tokenY
-  // For short: collateral in tokenY, size in SOL
+  // For long: collateral in SOL, size in token
+  // For short: collateral in token, size in SOL
   let output = 0;
   let collateralUsd = 0;
   let outputUsd = 0;
   if (isLong) {
     // Output: expectedOutput(size) - (collateral * (leverage - 1))
-    // size is in tokenY (raw, 6 decimals)
-    // expectedOutput: tokenY -> SOL
-    const sizeTokenY = rawSize / Math.pow(10, TOKEN_Y_DECIMALS);
-    const expectedSol = calculateExpectedOutput(reserves, sizeTokenY, false); // tokenY -> SOL
+    // size is in token (raw, 6 decimals)
+    // expectedOutput: token -> SOL
+    const sizeToken = rawSize / Math.pow(10, TOKEN_Y_DECIMALS);
+    const expectedSol = calculateExpectedOutput(reserves, sizeToken, false); // token -> SOL
     // Subtract borrowed amount (collateral * (leverage - 1)), collateral in SOL
     const borrowedSol = (rawCollateral / LAMPORTS_PER_SOL) * (leverage - 1);
     output = expectedSol - borrowedSol;
@@ -194,12 +233,12 @@ export function calculatePositionPnL({
   } else {
     // Output: expectedOutput(size) - (collateral * (leverage - 1))
     // size is in SOL (raw, 9 decimals)
-    // expectedOutput: SOL -> tokenY
+    // expectedOutput: SOL -> token
     const sizeSol = rawSize / LAMPORTS_PER_SOL;
-    const expectedTokenY = calculateExpectedOutput(reserves, sizeSol, true); // SOL -> tokenY
-    // Subtract borrowed amount (collateral * (leverage - 1)), collateral in tokenY
-    const borrowedTokenY = (rawCollateral / Math.pow(10, TOKEN_Y_DECIMALS)) * (leverage - 1);
-    output = expectedTokenY - borrowedTokenY;
+    const expectedToken = calculateExpectedOutput(reserves, sizeSol, true); // SOL -> token
+    // Subtract borrowed amount (collateral * (leverage - 1)), collateral in token
+    const borrowedToken = (rawCollateral / Math.pow(10, TOKEN_Y_DECIMALS)) * (leverage - 1);
+    output = expectedToken - borrowedToken;
     // USD values
     outputUsd = output * calculatePoolPrice(reserves) * solPrice;
     collateralUsd = (rawCollateral / Math.pow(10, TOKEN_Y_DECIMALS)) * calculatePoolPrice(reserves) * solPrice;

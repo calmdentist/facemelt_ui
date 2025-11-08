@@ -23,12 +23,20 @@ import { Idl } from '@coral-xyz/anchor';
 
 interface PoolAccount {
   authority: PublicKey;
-  tokenYMint: PublicKey;
-  tokenYVault: PublicKey;
-  tokenYAmount: BN;
-  virtualTokenYAmount: BN;
-  lamports: BN;
-  virtualSolAmount: BN;
+  tokenMint: PublicKey;
+  tokenVault: PublicKey;
+  tokenReserve: BN;
+  solReserve: BN;
+  effectiveSolReserve: BN;
+  effectiveTokenReserve: BN;
+  totalDeltaKLongs: BN;
+  totalDeltaKShorts: BN;
+  cumulativeFundingAccumulator: BN;
+  lastUpdateTimestamp: BN;
+  emaPrice: BN;
+  emaInitialized: boolean;
+  fundingConstantC: BN;
+  liquidationDivergenceThreshold: BN;
   bump: number;
 }
 
@@ -70,28 +78,28 @@ export async function createSwapTransaction({
   } as Wallet;
 
   const provider = new AnchorProvider(connection, anchorWallet, {});
-  const program = new Program(IDL as Idl, new PublicKey('DjSx4kWjgjUQ2QDjYcfJooCNhisSC2Rk3uzGkK9fJRbb'), provider);
+  const program = new Program(IDL as Idl, new PublicKey('5cZM87xG3opyuDjBedCpxJ6mhDyztVXLEB18tcULCmmW'), provider);
 
   // Get pool data to determine token accounts
   const poolData = (await program.account.pool.fetch(pool)) as unknown as PoolAccount;
-  const tokenYMint = poolData.tokenYMint;
-  const tokenYVault = poolData.tokenYVault;
+  const tokenMint = poolData.tokenMint;
+  const tokenVault = poolData.tokenVault;
 
   // Set up token accounts based on swap direction
   let userTokenIn: PublicKey;
   let userTokenOut: PublicKey;
 
   if (isSolToTokenY) {
-    // Swapping from SOL to token Y
+    // Swapping from SOL to token
     userTokenIn = wallet.publicKey; // SOL account is the wallet itself
     userTokenOut = await getAssociatedTokenAddress(
-      tokenYMint,
+      tokenMint,
       wallet.publicKey
     );
   } else {
-    // Swapping from token Y to SOL
+    // Swapping from token to SOL
     userTokenIn = await getAssociatedTokenAddress(
-      tokenYMint,
+      tokenMint,
       wallet.publicKey
     );
     userTokenOut = wallet.publicKey; // SOL account is the wallet itself
@@ -100,19 +108,19 @@ export async function createSwapTransaction({
   // Create the transaction
   const transaction = new Transaction();
 
-  // Check if token Y account exists and create it if it doesn't
-  // Only need to check if we're receiving token Y (either as input or output)
-  const tokenYAccount = isSolToTokenY ? userTokenOut : userTokenIn;
+  // Check if token account exists and create it if it doesn't
+  // Only need to check if we're receiving token (either as input or output)
+  const tokenAccount = isSolToTokenY ? userTokenOut : userTokenIn;
   try {
-    await getAccount(connection, tokenYAccount);
+    await getAccount(connection, tokenAccount);
   } catch (error) {
     // Account doesn't exist, create it
     transaction.add(
       createAssociatedTokenAccountInstruction(
         wallet.publicKey,
-        tokenYAccount,
+        tokenAccount,
         wallet.publicKey,
-        tokenYMint
+        tokenMint
       )
     );
   }
@@ -127,7 +135,7 @@ export async function createSwapTransaction({
     .accounts({
       user: wallet.publicKey,
       pool,
-      tokenYVault,
+      tokenVault,
       userTokenIn,
       userTokenOut,
       tokenProgram: TOKEN_PROGRAM_ID,
@@ -187,31 +195,25 @@ export async function createLeverageSwapTransaction({
   } as Wallet;
 
   const provider = new AnchorProvider(connection, anchorWallet, {});
-  const program = new Program(IDL as Idl, new PublicKey('DjSx4kWjgjUQ2QDjYcfJooCNhisSC2Rk3uzGkK9fJRbb'), provider);
+  const program = new Program(IDL as Idl, new PublicKey('5cZM87xG3opyuDjBedCpxJ6mhDyztVXLEB18tcULCmmW'), provider);
 
   // Get pool data to determine token accounts
   const poolData = (await program.account.pool.fetch(pool)) as unknown as PoolAccount;
-  const tokenYMint = poolData.tokenYMint;
-  const tokenYVault = poolData.tokenYVault;
+  const tokenMint = poolData.tokenMint;
+  const tokenVault = poolData.tokenVault;
 
   // Set up token accounts based on swap direction
   let userTokenIn: PublicKey;
-  let userTokenOut: PublicKey;
 
   if (isSolToTokenY) {
-    // Swapping from SOL to token Y
+    // Swapping from SOL to token
     userTokenIn = wallet.publicKey; // SOL account is the wallet itself
-    userTokenOut = await getAssociatedTokenAddress(
-      tokenYMint,
-      wallet.publicKey
-    );
   } else {
-    // Swapping from token Y to SOL
+    // Swapping from token to SOL
     userTokenIn = await getAssociatedTokenAddress(
-      tokenYMint,
+      tokenMint,
       wallet.publicKey
     );
-    userTokenOut = wallet.publicKey; // SOL account is the wallet itself
   }
 
   // Convert nonce to BN and get its bytes
@@ -226,58 +228,45 @@ export async function createLeverageSwapTransaction({
       wallet.publicKey.toBuffer(),
       nonceBytes,
     ],
-    new PublicKey('DjSx4kWjgjUQ2QDjYcfJooCNhisSC2Rk3uzGkK9fJRbb')
-  );
-
-  // Derive associated token account for the position PDA
-  const positionTokenAccount = await getAssociatedTokenAddress(
-    tokenYMint,
-    position,
-    true // allowOwnerOffCurve
+    new PublicKey('5cZM87xG3opyuDjBedCpxJ6mhDyztVXLEB18tcULCmmW')
   );
 
   // Create the transaction
   const transaction = new Transaction();
 
-  // Check if token Y account exists and create it if it doesn't
-  // Only need to check if we're receiving token Y (either as input or output)
-  const tokenYAccount = isSolToTokenY ? userTokenOut : userTokenIn;
-  try {
-    await getAccount(connection, tokenYAccount);
-  } catch (error) {
-    // Account doesn't exist, create it
-    transaction.add(
-      createAssociatedTokenAccountInstruction(
-        wallet.publicKey,
-        tokenYAccount,
-        wallet.publicKey,
-        tokenYMint
-      )
-    );
+  // Check if token account exists and create it if it doesn't (only for non-SOL input)
+  if (!isSolToTokenY) {
+    try {
+      await getAccount(connection, userTokenIn);
+    } catch (error) {
+      // Account doesn't exist, create it
+      transaction.add(
+        createAssociatedTokenAccountInstruction(
+          wallet.publicKey,
+          userTokenIn,
+          wallet.publicKey,
+          tokenMint
+        )
+      );
+    }
   }
 
   // Add leverage swap instruction using Anchor
   const leverageSwapIx = await program.methods
     .leverageSwap(
       new BN(Math.floor(amountIn * (isSolToTokenY ? LAMPORTS_PER_SOL : Math.pow(10, 6)))), // Use correct decimals for input
-      // new BN(Math.floor(minAmountOut * (isSolToTokenY ? Math.pow(10, 6) : LAMPORTS_PER_SOL))), // Use correct decimals for output
-      new BN(0),
+      new BN(0), // minAmountOut
       Math.floor(leverage), // Pass raw leverage value (2.0 becomes 2)
       nonceBN
     )
     .accounts({
       user: wallet.publicKey,
       pool,
-      tokenYVault,
+      tokenVault,
       userTokenIn,
-      userTokenOut,
       position,
-      positionTokenAccount,
-      positionTokenMint: tokenYMint,
       tokenProgram: TOKEN_PROGRAM_ID,
-      associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
       systemProgram: SystemProgram.programId,
-      rent: SYSVAR_RENT_PUBKEY,
     })
     .instruction();
 
@@ -329,23 +318,16 @@ export async function createClosePositionTransaction({
   } as Wallet;
 
   const provider = new AnchorProvider(connection, anchorWallet, {});
-  const program = new Program(IDL as Idl, new PublicKey('DjSx4kWjgjUQ2QDjYcfJooCNhisSC2Rk3uzGkK9fJRbb'), provider);
+  const program = new Program(IDL as Idl, new PublicKey('5cZM87xG3opyuDjBedCpxJ6mhDyztVXLEB18tcULCmmW'), provider);
 
   // Fetch pool data directly using pool PDA provided
   const poolData = (await program.account.pool.fetch(pool)) as unknown as PoolAccount;
-  const tokenYMint = poolData.tokenYMint;
-  const tokenYVault = poolData.tokenYVault;
-
-  // Derive associated token account for the position PDA
-  const positionTokenAccount = await getAssociatedTokenAddress(
-    tokenYMint,
-    position,
-    true // allowOwnerOffCurve
-  );
+  const tokenMint = poolData.tokenMint;
+  const tokenVault = poolData.tokenVault;
 
   // Get user's token account
   const userTokenOut = await getAssociatedTokenAddress(
-    tokenYMint,
+    tokenMint,
     wallet.publicKey
   );
 
@@ -362,7 +344,7 @@ export async function createClosePositionTransaction({
         wallet.publicKey,
         userTokenOut,
         wallet.publicKey,
-        tokenYMint
+        tokenMint
       )
     );
   }
@@ -373,14 +355,11 @@ export async function createClosePositionTransaction({
     .accounts({
       user: wallet.publicKey,
       pool,
-      tokenYVault,
+      tokenVault,
       position,
-      positionTokenAccount,
       userTokenOut,
       tokenProgram: TOKEN_PROGRAM_ID,
-      associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
       systemProgram: SystemProgram.programId,
-      rent: SYSVAR_RENT_PUBKEY,
     })
     .instruction();
 

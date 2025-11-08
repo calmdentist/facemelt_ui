@@ -7,13 +7,16 @@ import { Metaplex } from "@metaplex-foundation/js";
 export interface Pool {
   address: string;
   authority: string;
-  tokenYMint: string;
-  tokenYVault: string;
-  tokenYAmount: string;
-  virtualTokenYAmount: string;
-  lamports: string;
-  virtualSolAmount: string;
-  creationTimestamp: string;
+  tokenMint: string;
+  tokenVault: string;
+  tokenReserve: string;
+  effectiveTokenReserve: string;
+  solReserve: string;
+  effectiveSolReserve: string;
+  totalDeltaKLongs: string;
+  totalDeltaKShorts: string;
+  fundingConstantC: string;
+  lastUpdateTimestamp: string;
   metadata?: {
     name: string;
     symbol: string;
@@ -78,16 +81,19 @@ export async function fetchAllPools(): Promise<Pool[]> {
         const basePool = {
           address: pool.publicKey.toBase58(),
           authority: pool.account.authority.toBase58(),
-          tokenYMint: pool.account.tokenYMint.toBase58(),
-          tokenYVault: pool.account.tokenYVault.toBase58(),
-          tokenYAmount: pool.account.tokenYAmount.toString(),
-          virtualTokenYAmount: pool.account.virtualTokenYAmount.toString(),
-          lamports: pool.account.lamports.toString(),
-          virtualSolAmount: pool.account.virtualSolAmount.toString(),
-          creationTimestamp: pool.account.creationTimestamp.toString(),
+          tokenMint: pool.account.tokenMint.toBase58(),
+          tokenVault: pool.account.tokenVault.toBase58(),
+          tokenReserve: pool.account.tokenReserve.toString(),
+          effectiveTokenReserve: pool.account.effectiveTokenReserve.toString(),
+          solReserve: pool.account.solReserve.toString(),
+          effectiveSolReserve: pool.account.effectiveSolReserve.toString(),
+          totalDeltaKLongs: pool.account.totalDeltaKLongs.toString(),
+          totalDeltaKShorts: pool.account.totalDeltaKShorts.toString(),
+          fundingConstantC: pool.account.fundingConstantC.toString(),
+          lastUpdateTimestamp: pool.account.lastUpdateTimestamp.toString(),
         };
 
-        const metadata = await getTokenMetadata(connection, basePool.tokenYMint);
+        const metadata = await getTokenMetadata(connection, basePool.tokenMint);
         return {
           ...basePool,
           metadata,
