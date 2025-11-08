@@ -6,7 +6,7 @@ import { decimaMono } from "./fonts";
 import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
-  title: "Whiplash - Leverage Trading AMM on Solana",
+  title: "Facemelt - Leverage Trading AMM on Solana",
   description: "The first AMM on Solana featuring leverage trading",
 };
 

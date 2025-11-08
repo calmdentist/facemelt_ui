@@ -2,15 +2,15 @@ import { NextResponse } from 'next/server';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { Program, AnchorProvider, Idl } from '@coral-xyz/anchor';
 import { Wallet } from '@coral-xyz/anchor';
-import IDL from '../../../idl/whiplash.json';
+import IDL from '../../../idl/facemelt.json';
 import { BN } from 'bn.js';
-import { RPC_URL, WHIPLASH_PROGRAM_ID } from '@/constants/constants';
+import { RPC_URL, FACEMELT_PROGRAM_ID } from '@/constants/constants';
 import { connection } from '@/utils/connection';
 
 export const dynamic = "force-dynamic";
 
 // Program ID from IDL metadata
-const PROGRAM_ID = new PublicKey(WHIPLASH_PROGRAM_ID);
+const PROGRAM_ID = new PublicKey(FACEMELT_PROGRAM_ID);
 
 // Define position account type
 interface PositionAccount {

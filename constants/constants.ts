@@ -6,8 +6,8 @@ dotenv.config();
 // export const RPC_URL = "https://christie-jbe1oy-fast-mainnet.helius-rpc.com";
 export const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL || "http://127.0.0.1:8899";
 
-// Whiplash program details
-export const WHIPLASH_PROGRAM_ID = "DjSx4kWjgjUQ2QDjYcfJooCNhisSC2Rk3uzGkK9fJRbb";
+// Facemelt program details
+export const FACEMELT_PROGRAM_ID = "DjSx4kWjgjUQ2QDjYcfJooCNhisSC2Rk3uzGkK9fJRbb";
 export const USDC_TOKEN_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 
 // Feature flags

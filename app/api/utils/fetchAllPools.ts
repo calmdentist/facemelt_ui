@@ -1,7 +1,7 @@
 import { Connection, PublicKey } from "@solana/web3.js";
 import { Program, AnchorProvider, Idl, ProgramAccount } from "@coral-xyz/anchor";
-import { RPC_URL, WHIPLASH_PROGRAM_ID } from "@/constants/constants";
-import IDL from "@/idl/whiplash.json";
+import { RPC_URL, FACEMELT_PROGRAM_ID } from "@/constants/constants";
+import IDL from "@/idl/facemelt.json";
 import { Metaplex } from "@metaplex-foundation/js";
 
 export interface Pool {
@@ -54,7 +54,7 @@ async function getTokenMetadata(connection: Connection, mintAddress: string) {
 }
 
 export async function fetchAllPools(): Promise<Pool[]> {
-  const programId = new PublicKey(WHIPLASH_PROGRAM_ID);
+  const programId = new PublicKey(FACEMELT_PROGRAM_ID);
   const connection = new Connection(RPC_URL, 'confirmed');
   
   // Create a provider without a wallet since this is server-side

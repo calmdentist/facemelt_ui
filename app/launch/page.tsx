@@ -69,7 +69,7 @@ export default function LaunchPage() {
         uploadFormData.append('file', tokenImage);
         uploadFormData.append('name', tokenName);
         uploadFormData.append('symbol', tokenTicker);
-        uploadFormData.append('description', 'Token launched on Whiplash');
+        uploadFormData.append('description', 'Token launched on Facemelt');
         uploadFormData.append('website', website);
         uploadFormData.append('twitter', twitter);
         uploadFormData.append('telegram', telegram);
@@ -99,7 +99,7 @@ export default function LaunchPage() {
       const { transaction, mintKeypair } = await createLaunchTokenTransaction({
         name: tokenName,
         symbol: tokenTicker,
-        description: 'Token launched on Whiplash',
+        description: 'Token launched on Facemelt',
         metadataUri,
         virtualSolReserve: parseFloat(virtualLiquidity),
         wallet

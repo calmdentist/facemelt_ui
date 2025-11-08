@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import TokensTable from "@/components/TokenGrid";
 
 export const metadata: Metadata = {
-  title: "Whiplash",
-  description: "View all tokens launched on Whiplash",
+  title: "Facemelt",
+  description: "View all tokens launched on Facemelt",
 };
 
 export default function HomePage() {

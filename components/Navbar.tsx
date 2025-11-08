@@ -33,7 +33,7 @@ export default function Navbar() {
       {/* Left: Logo and Menu */}
       <div className="flex items-center space-x-8 min-w-[260px] justify-start">
         <Link href="/" className="flex items-center space-x-2">
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent font-mono">Whiplash</h1>
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent font-mono">Facemelt</h1>
         </Link>
         <div className="hidden md:flex items-center space-x-8">
           <Link href="/trade" className="text-foreground hover:text-primary transition font-mono">

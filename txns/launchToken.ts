@@ -24,7 +24,7 @@ import { connection } from '@/utils/connection';
 import BN from 'bn.js';
 import { Program, AnchorProvider, Wallet } from '@coral-xyz/anchor';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import IDL from '@/idl/whiplash.json';
+import IDL from '@/idl/facemelt.json';
 import { Idl } from '@coral-xyz/anchor';
 
 interface LaunchTokenParams {

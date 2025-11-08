@@ -19,13 +19,13 @@ export default function DocsPage() {
       content: (
         <div className="space-y-4">
           <p>
-            Whiplash is a novel automated market maker (AMM) designed specifically for the memecoin market. 
+            Facemelt is a novel automated market maker (AMM) designed specifically for the memecoin market. 
             It makes an already volatile asset class even more volatile by combining spot and leverage trading 
             within a unified liquidity framework, requiring zero seed capital for new token launches.
           </p>
           <p>
             By employing the Uniswap V2 style invariant with modifications to accommodate leveraged positions,
-            Whiplash enables a novel trading experience while ensuring the underlying AMM remains solvent at all times.
+            Facemelt enables a novel trading experience while ensuring the underlying AMM remains solvent at all times.
           </p>
         </div>
       ),
@@ -36,7 +36,7 @@ export default function DocsPage() {
       content: (
         <div className="space-y-4">
           <p>
-            At the core of Whiplash is a modified Uniswap V2 style AMM with the constant product invariant:
+            At the core of Facemelt is a modified Uniswap V2 style AMM with the constant product invariant:
           </p>
           <div className="p-4 bg-secondary/40 rounded-lg text-center font-mono">
             x · y = k
@@ -48,7 +48,7 @@ export default function DocsPage() {
             <li>k is a constant value maintained during spot trading</li>
           </ul>
           <p>
-            Unlike traditional AMMs, Whiplash introduces modifications to accommodate leveraged trading and zero seed capital token launches.
+            Unlike traditional AMMs, Facemelt introduces modifications to accommodate leveraged trading and zero seed capital token launches.
           </p>
         </div>
       ),
@@ -59,7 +59,7 @@ export default function DocsPage() {
       content: (
         <div className="space-y-4">
           <p>
-            The token launch process in Whiplash represents a significant innovation in the AMM space.
+            The token launch process in Facemelt represents a significant innovation in the AMM space.
             When a new memecoin token is created:
           </p>
           <div className="p-4 bg-secondary/40 rounded-lg font-mono">
@@ -84,7 +84,7 @@ export default function DocsPage() {
       content: (
         <div className="space-y-4">
           <p>
-            Whiplash introduces a novel approach to leverage trading that modifies the constant product invariant temporarily 
+            Facemelt introduces a novel approach to leverage trading that modifies the constant product invariant temporarily 
             while positions are open.
           </p>
           <p>When a trader opens a leveraged position with leverage factor L:</p>
@@ -110,7 +110,7 @@ export default function DocsPage() {
       content: (
         <div className="space-y-4">
           <p>
-            The liquidation mechanism in Whiplash is designed to protect the protocol when leveraged positions become underwater.
+            The liquidation mechanism in Facemelt is designed to protect the protocol when leveraged positions become underwater.
           </p>
           <p>A position becomes eligible for liquidation when:</p>
           <div className="p-4 bg-secondary/40 rounded-lg text-center font-mono">
@@ -132,7 +132,7 @@ export default function DocsPage() {
       content: (
         <div className="space-y-4">
           <p>
-            A unique feature of Whiplash is the "limbo state" for positions that experience extreme price movements.
+            A unique feature of Facemelt is the "limbo state" for positions that experience extreme price movements.
           </p>
           <p>A position enters limbo when:</p>
           <div className="p-4 bg-secondary/40 rounded-lg font-mono">
@@ -151,7 +151,7 @@ export default function DocsPage() {
       title: 'System Properties',
       content: (
         <div className="space-y-4">
-          <p>Whiplash's design provides several important guarantees:</p>
+          <p>Facemelt's design provides several important guarantees:</p>
           <h3 className="text-lg font-bold mt-4">Solvency Guarantee</h3>
           <p>
             The solvency of the protocol is guaranteed by the zero-sum nature of the token supply and the constant product invariant.
@@ -191,7 +191,7 @@ export default function DocsPage() {
             </button>
           ))}
           <Link 
-            href="/whiplash_whitepaper.tex" 
+            href="/facemelt_whitepaper.tex" 
             target="_blank"
             className="block w-full p-2 text-left rounded-xl transition font-mono text-primary hover:bg-secondary/60 mt-4"
           >

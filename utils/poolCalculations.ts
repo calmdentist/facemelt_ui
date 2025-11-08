@@ -1,6 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import { Program, Idl } from '@coral-xyz/anchor';
-import IDL from '@/idl/whiplash.json';
+import IDL from '@/idl/facemelt.json';
 import { connection } from '@/utils/connection';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 

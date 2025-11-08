@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "name": "whiplash",
+  "name": "facemelt",
   "instructions": [
     {
       "name": "launch",
@@ -58,7 +58,7 @@
       ],
       "args": [
         {
-          "name": "virtualSolReserve",
+          "name": "solAmount",
           "type": "u64"
         },
         {
@@ -72,6 +72,18 @@
         {
           "name": "metadataUri",
           "type": "string"
+        },
+        {
+          "name": "fundingConstantC",
+          "type": {
+            "option": "u128"
+          }
+        },
+        {
+          "name": "liquidationDivergenceThreshold",
+          "type": {
+            "option": "u128"
+          }
         }
       ]
     },
@@ -89,7 +101,7 @@
           "isSigner": false
         },
         {
-          "name": "tokenYVault",
+          "name": "tokenVault",
           "isMut": true,
           "isSigner": false
         },
@@ -139,7 +151,7 @@
           "isSigner": false
         },
         {
-          "name": "tokenYVault",
+          "name": "tokenVault",
           "isMut": true,
           "isSigner": false
         },
@@ -149,23 +161,8 @@
           "isSigner": false
         },
         {
-          "name": "userTokenOut",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
           "name": "position",
           "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "positionTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "positionTokenMint",
-          "isMut": false,
           "isSigner": false
         },
         {
@@ -174,17 +171,7 @@
           "isSigner": false
         },
         {
-          "name": "associatedTokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
           "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
           "isMut": false,
           "isSigner": false
         }
@@ -230,17 +217,12 @@
           "isSigner": false
         },
         {
-          "name": "tokenYVault",
+          "name": "tokenVault",
           "isMut": true,
           "isSigner": false
         },
         {
           "name": "position",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "positionTokenAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -255,17 +237,7 @@
           "isSigner": false
         },
         {
-          "name": "associatedTokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
           "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
           "isMut": false,
           "isSigner": false
         }
@@ -286,17 +258,12 @@
           "isSigner": false
         },
         {
-          "name": "tokenYVault",
+          "name": "tokenVault",
           "isMut": true,
           "isSigner": false
         },
         {
           "name": "position",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "positionTokenAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -311,17 +278,7 @@
           "isSigner": false
         },
         {
-          "name": "associatedTokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
           "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
           "isMut": false,
           "isSigner": false
         }
@@ -340,40 +297,60 @@
             "type": "publicKey"
           },
           {
-            "name": "tokenYMint",
+            "name": "tokenMint",
             "type": "publicKey"
           },
           {
-            "name": "tokenYVault",
+            "name": "tokenVault",
             "type": "publicKey"
           },
           {
-            "name": "tokenYAmount",
+            "name": "tokenReserve",
             "type": "u64"
           },
           {
-            "name": "virtualTokenYAmount",
+            "name": "solReserve",
             "type": "u64"
           },
           {
-            "name": "lamports",
+            "name": "effectiveSolReserve",
             "type": "u64"
           },
           {
-            "name": "virtualSolAmount",
+            "name": "effectiveTokenReserve",
             "type": "u64"
           },
           {
-            "name": "leveragedTokenYAmount",
-            "type": "u64"
+            "name": "totalDeltaKLongs",
+            "type": "u128"
           },
           {
-            "name": "leveragedSolAmount",
-            "type": "u64"
+            "name": "totalDeltaKShorts",
+            "type": "u128"
           },
           {
-            "name": "creationTimestamp",
-            "type": "u64"
+            "name": "cumulativeFundingAccumulator",
+            "type": "u128"
+          },
+          {
+            "name": "lastUpdateTimestamp",
+            "type": "i64"
+          },
+          {
+            "name": "emaPrice",
+            "type": "u128"
+          },
+          {
+            "name": "emaInitialized",
+            "type": "bool"
+          },
+          {
+            "name": "fundingConstantC",
+            "type": "u128"
+          },
+          {
+            "name": "liquidationDivergenceThreshold",
+            "type": "u128"
           },
           {
             "name": "bump",
@@ -396,10 +373,6 @@
             "type": "publicKey"
           },
           {
-            "name": "positionVault",
-            "type": "publicKey"
-          },
-          {
             "name": "isLong",
             "type": "bool"
           },
@@ -412,10 +385,6 @@
             "type": "u32"
           },
           {
-            "name": "entryPrice",
-            "type": "u128"
-          },
-          {
             "name": "size",
             "type": "u64"
           },
@@ -424,8 +393,8 @@
             "type": "u128"
           },
           {
-            "name": "leveragedTokenAmount",
-            "type": "u64"
+            "name": "entryFundingAccumulator",
+            "type": "u128"
           },
           {
             "name": "nonce",
@@ -756,6 +725,16 @@
       "code": 6019,
       "name": "PositionNotClosable",
       "msg": "Position cannot be closed (would require liquidation)"
+    },
+    {
+      "code": 6020,
+      "name": "ExcessiveLeverage",
+      "msg": "Excessive leverage - total delta_k ratio too high"
+    },
+    {
+      "code": 6021,
+      "name": "LiquidationPriceManipulation",
+      "msg": "Liquidation blocked: spot price diverged too far from EMA (possible manipulation)"
     }
   ],
   "metadata": {

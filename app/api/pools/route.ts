@@ -1,8 +1,8 @@
 import { Connection, PublicKey } from "@solana/web3.js";
 import { Program, AnchorProvider, Idl, ProgramAccount } from "@coral-xyz/anchor";
 import { NextResponse } from "next/server";
-import { RPC_URL, WHIPLASH_PROGRAM_ID } from "@/constants/constants";
-import IDL from "@/idl/whiplash.json";
+import { RPC_URL, FACEMELT_PROGRAM_ID } from "@/constants/constants";
+import IDL from "@/idl/facemelt.json";
 import { Metaplex } from "@metaplex-foundation/js";
 import { Wallet } from '@coral-xyz/anchor';
 import { connection } from '@/utils/connection';
@@ -92,7 +92,7 @@ export async function GET(request: Request) {
 
     // Create Anchor provider and program
     const provider = new AnchorProvider(connection, {} as Wallet, {});
-    const program = new Program(IDL as Idl, new PublicKey(WHIPLASH_PROGRAM_ID), provider);
+    const program = new Program(IDL as Idl, new PublicKey(FACEMELT_PROGRAM_ID), provider);
 
     // Find pool PDA
     const [pool] = PublicKey.findProgramAddressSync(
