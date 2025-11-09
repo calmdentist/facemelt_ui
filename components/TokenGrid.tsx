@@ -84,17 +84,17 @@ const TokenItem = ({ token, metric, metricValue, onClick }: TokenItemProps) => (
         <div className="w-10 h-10 bg-white/10 rounded-full" />
       )}
       <div>
-        <h3 className="text-white font-semibold text-sm">
+        <h3 className="text-foreground font-semibold text-sm">
           {token.metadata?.symbol || "UNKNOWN"}
         </h3>
-        <p className="text-white/60 text-xs">
+        <p className="text-foreground/60 text-xs">
           {token.metadata?.name || "Unknown Token"}
         </p>
       </div>
     </div>
     <div className="text-right">
-      <p className="text-white/60 text-xs">{metric}</p>
-      <p className="text-white font-semibold text-sm">{metricValue}</p>
+      <p className="text-foreground/60 text-xs">{metric}</p>
+      <p className="text-foreground font-semibold text-sm">{metricValue}</p>
     </div>
   </div>
 );
@@ -160,11 +160,11 @@ export default function TokensTable() {
   };
 
   if (loading) {
-    return <div className="text-center py-8 text-white">Loading...</div>;
+    return <div className="text-center py-8 text-foreground">Loading...</div>;
   }
 
   if (error) {
-    return <div className="text-center py-8 text-red-500">{error}</div>;
+    return <div className="text-center py-8 text-secondary">{error}</div>;
   }
 
   // Sort tokens for each section
@@ -183,12 +183,12 @@ export default function TokensTable() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* New Section */}
-      <div className="bg-gray-800/30 rounded-2xl border border-gray-700/50 overflow-hidden">
-        <div className="p-4 border-b border-gray-700/50">
-          <h2 className="text-xl font-bold text-white">🚀 New</h2>
-          <p className="text-white/60 text-sm">Recently launched tokens</p>
+      <div className="bg-[#1a1a1a] rounded-2xl border border-white/10 overflow-hidden">
+        <div className="p-4 border-b border-white/10">
+          <h2 className="text-xl font-bold text-primary">🚀 New</h2>
+          <p className="text-foreground/60 text-sm">Recently launched tokens</p>
         </div>
-        <div className="divide-y divide-gray-700/30">
+        <div className="divide-y divide-white/5">
           {newTokens.map((token) => (
             <TokenItem
               key={token.address}
@@ -202,12 +202,12 @@ export default function TokensTable() {
       </div>
 
       {/* Trending Section */}
-      <div className="bg-gray-800/30 rounded-2xl border border-gray-700/50 overflow-hidden">
-        <div className="p-4 border-b border-gray-700/50">
-          <h2 className="text-xl font-bold text-white">🔥 Trending</h2>
-          <p className="text-white/60 text-sm">Highest 24h volume</p>
+      <div className="bg-[#1a1a1a] rounded-2xl border border-white/10 overflow-hidden">
+        <div className="p-4 border-b border-white/10">
+          <h2 className="text-xl font-bold text-secondary">🔥 Trending</h2>
+          <p className="text-foreground/60 text-sm">Highest 24h volume</p>
         </div>
-        <div className="divide-y divide-gray-700/30">
+        <div className="divide-y divide-white/5">
           {trendingTokens.map((token) => (
             <TokenItem
               key={token.address}
@@ -221,12 +221,12 @@ export default function TokensTable() {
       </div>
 
       {/* Hall of Fame Section */}
-      <div className="bg-gray-800/30 rounded-2xl border border-gray-700/50 overflow-hidden">
-        <div className="p-4 border-b border-gray-700/50">
-          <h2 className="text-xl font-bold text-white">👑 Hall of Fame</h2>
-          <p className="text-white/60 text-sm">Highest market cap</p>
+      <div className="bg-[#1a1a1a] rounded-2xl border border-white/10 overflow-hidden">
+        <div className="p-4 border-b border-white/10">
+          <h2 className="text-xl font-bold text-accent">👑 Hall of Fame</h2>
+          <p className="text-foreground/60 text-sm">Highest market cap</p>
         </div>
-        <div className="divide-y divide-gray-700/30">
+        <div className="divide-y divide-white/5">
           {hallOfFameTokens.map((token) => (
             <TokenItem
               key={token.address}

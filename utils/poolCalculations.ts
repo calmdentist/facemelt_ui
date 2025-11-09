@@ -173,6 +173,9 @@ export function calculateFundingRate(reserves: PoolReserves): {
 } {
   const { effectiveSolReserve, effectiveTokenReserve, totalDeltaKLongs, totalDeltaKShorts, fundingConstantC } = reserves;
   
+  // Fixed-point precision constant (matches PRECISION_BITS = 32 in pool.rs)
+  const PRECISION = Math.pow(2, 32); // 2^32 = 4,294,967,296
+  
   // Calculate k_e (effective constant product)
   const k_e = effectiveSolReserve * effectiveTokenReserve;
   
@@ -184,11 +187,15 @@ export function calculateFundingRate(reserves: PoolReserves): {
     return { perSecond: 0, perDay: 0, perAnnum: 0 };
   }
   
-  // Calculate leverage ratio
+  // Calculate leverage ratio (matches the scaled calculation in pool.rs)
   const leverageRatio = totalDeltaK / k_e;
   
-  // Calculate funding rate: C * (leverageRatio)^2
-  const fundingRatePerSecond = fundingConstantC * Math.pow(leverageRatio, 2);
+  // fundingConstantC is stored in fixed-point format with 2^32 precision
+  // Convert it to a regular number by dividing by PRECISION
+  const C = fundingConstantC / PRECISION;
+  
+  // Calculate funding rate per second: C * (leverageRatio)^2
+  const fundingRatePerSecond = C * Math.pow(leverageRatio, 2);
   
   // Convert to percentage rates
   const perSecond = fundingRatePerSecond * 100;

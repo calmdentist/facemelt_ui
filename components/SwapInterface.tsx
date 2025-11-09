@@ -63,7 +63,7 @@ function BalanceChip({ token }: { token: TokenState }) {
   }, [publicKey, token.mint, connection]);
 
   return (
-    <div className="text-xs px-2 py-1 rounded bg-[#1a1b20] text-[#b5b5b5] flex items-center gap-1">
+    <div className="text-xs px-2 py-1 rounded bg-[#1a1a1a] text-foreground/60 flex items-center gap-1">
       <WalletIcon className="w-3 h-3" />
       {balance.toFixed(4)}
     </div>
@@ -363,13 +363,13 @@ export default function SwapInterface({ initialOutputToken }: SwapInterfaceProps
   return (
     <form onSubmit={handleSwap} className="space-y-0">
       {/* Input */}
-      <div className="relative bg-[#23242a] rounded-2xl px-5 py-2 pb-4 flex flex-col gap-4">
+      <div className="relative bg-[#1a1a1a] rounded-2xl px-5 py-2 pb-4 flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <span className="text-white font-mono text-sm">Selling</span>
+          <span className="text-foreground font-mono text-sm">Selling</span>
           <div className="flex gap-2 items-center">
             <BalanceChip token={inputToken} />
-            <button type="button" onClick={handleHalf} className="text-xs px-2 py-1 rounded bg-[#1a1b20] text-[#b5b5b5] hover:bg-[#23242a]">HALF</button>
-            <button type="button" onClick={handleMax} className="text-xs px-2 py-1 rounded bg-[#1a1b20] text-[#b5b5b5] hover:bg-[#23242a]">MAX</button>
+            <button type="button" onClick={handleHalf} className="text-xs px-2 py-1 rounded bg-black text-foreground/60 hover:bg-white/5 transition">HALF</button>
+            <button type="button" onClick={handleMax} className="text-xs px-2 py-1 rounded bg-black text-foreground/60 hover:bg-white/5 transition">MAX</button>
           </div>
         </div>
         <div className="flex items-center justify-between">
@@ -383,10 +383,10 @@ export default function SwapInterface({ initialOutputToken }: SwapInterfaceProps
               type="text"
               value={formatDisplayTokenAmount(inputAmount)}
               onChange={(e) => handleInputChange(e.target.value)}
-              className="w-48 bg-transparent text-3xl font-mono text-white outline-none placeholder:text-[#555] text-right overflow-hidden text-ellipsis whitespace-nowrap"
+              className="w-48 bg-transparent text-3xl font-mono text-foreground outline-none placeholder:text-foreground/20 text-right overflow-hidden text-ellipsis whitespace-nowrap"
               placeholder="0.00"
             />
-            <div className="text-xs text-[#b5b5b5] font-mono">
+            <div className="text-xs text-foreground/60 font-mono">
               ${inputAmount && !isNaN(Number(inputAmount)) ? (
                 Number(inputAmount) * (
                   inputTokenSymbol === 'SOL'
@@ -400,11 +400,11 @@ export default function SwapInterface({ initialOutputToken }: SwapInterfaceProps
       </div>
 
       {/* Switch button */}
-      <div className="flex justify-center relative z-30" style={{ marginTop: '-18px', marginBottom: '-18px' }}>
+      <div className="flex justify-center relative z-50" style={{ marginTop: '-18px', marginBottom: '-18px' }}>
         <button
           type="button"
           onClick={handleSwitchTokens}
-          className="bg-[#23242a] border-4 border-black rounded-full p-2 hover:bg-[#35363c] transition-colors shadow-lg relative z-30"
+          className="bg-[#1a1a1a] border-4 border-black rounded-full p-2 shadow-lg relative z-50"
           aria-label="Switch tokens"
           style={{ boxShadow: '0 2px 12px 0 #0008' }}
         >
@@ -416,9 +416,9 @@ export default function SwapInterface({ initialOutputToken }: SwapInterfaceProps
       </div>
 
       {/* Output */}
-      <div className="bg-[#23242a] rounded-2xl px-5 py-2 pb-4 flex flex-col gap-4">
+      <div className="bg-[#1a1a1a] rounded-2xl px-5 py-2 pb-4 flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <span className="text-white font-mono text-sm">Buying</span>
+          <span className="text-foreground font-mono text-sm">Buying</span>
         </div>
         <div className="flex items-center justify-between">
           <TokenDropdown 
@@ -431,10 +431,10 @@ export default function SwapInterface({ initialOutputToken }: SwapInterfaceProps
               type="text"
               value={formatDisplayTokenAmount(outputAmount)}
               readOnly
-              className="w-48 bg-transparent text-3xl font-mono text-white outline-none placeholder:text-[#555] text-right overflow-hidden text-ellipsis whitespace-nowrap"
+              className="w-48 bg-transparent text-3xl font-mono text-foreground outline-none placeholder:text-foreground/20 text-right overflow-hidden text-ellipsis whitespace-nowrap"
               placeholder="0.00"
             />
-            <div className="text-xs text-[#b5b5b5] font-mono">
+            <div className="text-xs text-foreground/60 font-mono">
               ${outputAmount && !isNaN(Number(outputAmount)) ? 
                 (outputTokenSymbol === 'SOL' ? 
                   (Number(outputAmount) * solPrice).toFixed(2) : 
@@ -449,10 +449,10 @@ export default function SwapInterface({ initialOutputToken }: SwapInterfaceProps
       <div style={{ marginTop: '18px' }} />
 
       {/* Leverage Slider */}
-      <div className="flex flex-col gap-1 bg-[#23242a] rounded-2xl p-5">
+      <div className="flex flex-col gap-1 bg-[#1a1a1a] rounded-2xl p-5">
         <div className="flex justify-between items-center mb-1">
-          <span className="font-mono text-sm text-white">Leverage</span>
-          <span className="font-mono text-sm text-white">{leverage.toFixed(1)}x{leverage === 1.0 ? ' (spot)' : ''}</span>
+          <span className="font-mono text-sm text-foreground">Leverage</span>
+          <span className="font-mono text-sm text-secondary">{leverage.toFixed(1)}x{leverage === 1.0 ? ' (spot)' : ''}</span>
         </div>
         <div className="mb-1" />
         <input
@@ -464,7 +464,7 @@ export default function SwapInterface({ initialOutputToken }: SwapInterfaceProps
           onChange={e => setLeverage(Number(e.target.value))}
           className="w-full leverage-slider"
           style={{
-            background: `linear-gradient(to right, #00ffb3 ${(100 * (leverage - 1) / (MAX_LEVERAGE - 1)).toFixed(1)}%, #35363c ${(100 * (leverage - 1) / (MAX_LEVERAGE - 1)).toFixed(1)}%)`
+            background: `linear-gradient(to right, #EBF400 0%, #F57D1F 50%, #F72798 100%) 0 0 / ${(100 * (leverage - 1) / (MAX_LEVERAGE - 1)).toFixed(1)}% 100% no-repeat, #2a2a2a`
           }}
         />
       </div>
@@ -473,36 +473,36 @@ export default function SwapInterface({ initialOutputToken }: SwapInterfaceProps
       <div style={{ marginTop: '18px' }} />
 
       {/* Info Row */}
-      <div className="flex justify-between items-center text-xs font-mono text-[#b5b5b5] px-2">
-        <span>Rate: <span className="text-white">1 {inputTokenSymbol} = {displayPrice.toFixed(4)} {outputTokenSymbol}</span></span>
-        <span>Impact: <span className="text-[#00ffb3]">0.1%</span></span>
-        <span>Fee: <span className="text-white">~$0.01</span></span>
+      <div className="flex justify-between items-center text-xs font-mono text-foreground/60 px-2">
+        <span>Rate: <span className="text-foreground">1 {inputTokenSymbol} = {displayPrice.toFixed(4)} {outputTokenSymbol}</span></span>
+        <span>Impact: <span className="text-accent">0.1%</span></span>
+        <span>Fee: <span className="text-foreground">~$0.01</span></span>
       </div>
 
       {/* Reserves Info */}
       {poolReserves && (
-        <div className="text-xs font-mono text-[#b5b5b5] px-2 mt-4 space-y-1">
+        <div className="text-xs font-mono text-foreground/60 px-2 mt-4 space-y-1">
           <div className="flex justify-between items-center">
             <span>SOL Reserves (real / effective):</span>
-            <span className="text-white">
+            <span className="text-foreground">
               {formatTokenAmount(poolReserves.solReserve / LAMPORTS_PER_SOL)} / {formatTokenAmount(poolReserves.effectiveSolReserve / LAMPORTS_PER_SOL)}
             </span>
           </div>
           <div className="flex justify-between items-center">
             <span>{outputTokenSymbol} Reserves (real / effective):</span>
-            <span className="text-white">
+            <span className="text-foreground">
               {formatTokenAmount(poolReserves.tokenReserve / 1e6)} / {formatTokenAmount(poolReserves.effectiveTokenReserve / 1e6)}
             </span>
           </div>
           <div className="flex justify-between items-center">
             <span>Total Debt (Longs / Shorts):</span>
-            <span className="text-white">
+            <span className="text-foreground">
               {formatTokenAmount(poolReserves.totalDeltaKLongs / 1e18)} / {formatTokenAmount(poolReserves.totalDeltaKShorts / 1e18)}
             </span>
           </div>
           <div className="flex justify-between items-center">
             <span>LP Funding Rate:</span>
-            <span className="text-[#00ffb3]">
+            <span className="text-accent">
               {(() => {
                 const fundingRate = calculateFundingRate(poolReserves);
                 return `${fundingRate.perDay.toFixed(4)}% / day (${fundingRate.perAnnum.toFixed(2)}% / year)`;
@@ -519,7 +519,7 @@ export default function SwapInterface({ initialOutputToken }: SwapInterfaceProps
       <button
         type="submit"
         disabled={!inputAmount || !outputAmount || isLoading || !poolAddress}
-        className="w-full p-4 bg-[#00ffb3] text-black rounded-2xl font-bold font-mono text-lg hover:bg-[#00d49c] transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+        className="w-full p-4 bg-primary text-black rounded-2xl font-bold font-mono text-lg hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
       >
         {isLoading ? 'Swapping...' : !poolAddress ? 'Pool not found' : 'Swap'}
       </button>
@@ -529,7 +529,7 @@ export default function SwapInterface({ initialOutputToken }: SwapInterfaceProps
         <button
           type="button"
           onClick={() => setIsPositionsPanelOpen(true)}
-          className="w-full p-4 mt-4 bg-[#1a1b20] text-white rounded-2xl font-bold font-mono text-lg hover:bg-[#23242a] transition-colors cursor-pointer"
+          className="w-full p-4 mt-4 bg-[#1a1a1a] text-foreground rounded-2xl font-bold font-mono text-lg hover:bg-white/5 transition cursor-pointer"
         >
           Manage Positions
         </button>

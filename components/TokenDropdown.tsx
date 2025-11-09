@@ -59,19 +59,19 @@ export default function TokenDropdown({ selected, onSelect, metadata }: TokenDro
     <div className="relative" ref={dropdownRef}>
       <button
         type="button"
-        className="flex items-center gap-2 px-2 py-1 rounded-2xl bg-[#1a1b20] hover:bg-[#23242a] cursor-pointer"
+        className="flex items-center gap-2 px-2 py-1 rounded-2xl bg-black hover:bg-white/5 cursor-pointer border border-white/10 transition"
         onClick={() => setOpen((v) => !v)}
       >
         <Avatar publicKey={selected || 'search'} size={28} />
         {(!selected || selected === 'Search token') ? (
-          <MagnifyingGlassIcon className="w-5 h-5 text-white" />
+          <MagnifyingGlassIcon className="w-5 h-5 text-foreground" />
         ) : (
-          <span className="font-mono text-lg text-white">{selectedSymbol}</span>
+          <span className="font-mono text-lg text-foreground">{selectedSymbol}</span>
         )}
-        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" className="ml-1 text-white"><path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" className="ml-1 text-foreground"><path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
       </button>
       {open && (
-        <div className="absolute z-50 mt-2 w-64 bg-[#181A20] border border-[#23242a] rounded-2xl shadow-xl">
+        <div className="absolute z-50 mt-2 w-64 bg-black border border-white/10 rounded-2xl shadow-xl">
           <div className="p-2">
             <div className="relative">
               <SearchBar
@@ -96,10 +96,10 @@ export default function TokenDropdown({ selected, onSelect, metadata }: TokenDro
                   setSelectedSymbol('SOL');
                   setOpen(false); 
                 }}
-                className="flex items-center gap-2 px-2 py-2 rounded hover:bg-[#23242a] cursor-pointer"
+                className="flex items-center gap-2 px-2 py-2 rounded hover:bg-white/5 cursor-pointer transition"
               >
                 <Avatar publicKey="So11111111111111111111111111111111111111112" size={24} />
-                <span className="text-white font-mono">SOL</span>
+                <span className="text-foreground font-mono">SOL</span>
               </button>
             </div>
           </div>

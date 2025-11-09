@@ -33,16 +33,16 @@ export default function Navbar() {
       {/* Left: Logo and Menu */}
       <div className="flex items-center space-x-8 min-w-[260px] justify-start">
         <Link href="/" className="flex items-center space-x-2">
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent font-mono">Facemelt</h1>
+          <Image src="/facemelt.png" alt="Facemelt" width={40} height={40} className="rounded-lg" />
         </Link>
         <div className="hidden md:flex items-center space-x-8">
-          <Link href="/trade" className="text-foreground hover:text-primary transition font-mono">
+          <Link href="/trade" className="text-foreground hover:opacity-80 transition font-mono">
             Trade
           </Link>
-          <Link href="/launch" className="text-foreground hover:text-primary transition font-mono">
+          <Link href="/launch" className="text-foreground hover:opacity-80 transition font-mono">
             Launch
           </Link>
-          <Link href="/docs" className="text-foreground hover:text-primary transition font-mono">
+          <Link href="/docs" className="text-foreground hover:opacity-80 transition font-mono">
             Docs
           </Link>
         </div>
@@ -91,7 +91,7 @@ export default function Navbar() {
           </div>
         ) : (
           <button 
-            className="px-6 py-2 bg-primary text-primary-foreground rounded-full font-medium hover:opacity-90 transition font-mono"
+            className="px-6 py-2 bg-primary text-black rounded-full font-medium hover:opacity-90 transition font-mono font-bold"
             onClick={() => setVisible(true)}
           >
             Connect Wallet
@@ -113,13 +113,13 @@ export default function Navbar() {
       {isMenuOpen && (
         <div className="absolute top-16 right-0 left-0 bg-card p-4 md:hidden z-50 border-b border-border">
           <div className="flex flex-col space-y-4">
-            <Link href="/trade" className="text-foreground hover:text-primary transition font-mono">
+            <Link href="/trade" className="text-foreground hover:opacity-80 transition font-mono">
               Trade
             </Link>
-            <Link href="/launch" className="text-foreground hover:text-primary transition font-mono">
+            <Link href="/launch" className="text-foreground hover:opacity-80 transition font-mono">
               Launch
             </Link>
-            <Link href="/docs" className="text-foreground hover:text-primary transition font-mono">
+            <Link href="/docs" className="text-foreground hover:opacity-80 transition font-mono">
               Docs
             </Link>
           </div>

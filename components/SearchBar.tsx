@@ -88,11 +88,11 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(({ className = ''
         }}
         onFocus={() => setShowResults(true)}
         placeholder={placeholder}
-        className="w-full px-4 py-1.5 bg-card border border-border rounded-full text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+        className="w-full px-4 py-1.5 bg-[#1a1a1a] border border-white/10 rounded-full text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary placeholder:text-foreground/40"
       />
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        className="h-4 w-4 absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground pointer-events-none"
+        className="h-4 w-4 absolute right-4 top-1/2 transform -translate-y-1/2 text-foreground/40 pointer-events-none"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
@@ -106,16 +106,16 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(({ className = ''
       </svg>
 
       {showResults && (query.trim() || isLoading) && (
-        <div className="absolute z-[60] w-full mt-2 bg-card border border-border rounded-lg shadow-lg max-h-96 overflow-y-auto">
+        <div className="absolute z-[60] w-full mt-2 bg-black border border-white/10 rounded-lg shadow-lg max-h-96 overflow-y-auto">
           {isLoading ? (
-            <div className="p-4 text-center text-muted-foreground">Loading...</div>
+            <div className="p-4 text-center text-foreground/60">Loading...</div>
           ) : results.length > 0 ? (
             <div className="py-1">
               {results.map((result, index) => (
                 <button
                   key={`${result.type}-${result.address}-${index}`}
                   onClick={() => handleSelect(result)}
-                  className="w-full px-4 py-2 text-left hover:bg-primary/10 transition flex items-center gap-2"
+                  className="w-full px-4 py-2 text-left hover:bg-white/5 transition flex items-center gap-2 text-foreground"
                 >
                   <Avatar publicKey={result.address} size={24} />
                   <div className="flex flex-col">
@@ -123,7 +123,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(({ className = ''
                       {result.type === 'token' ? result.symbol : truncateAddress(result.address)}
                     </span>
                     {result.type === 'token' && (
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-xs text-foreground/60">
                         {truncateAddress(result.address)}
                       </span>
                     )}
@@ -132,7 +132,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(({ className = ''
               ))}
             </div>
           ) : (
-            <div className="p-4 text-center text-muted-foreground">No results found</div>
+            <div className="p-4 text-center text-foreground/60">No results found</div>
           )}
         </div>
       )}

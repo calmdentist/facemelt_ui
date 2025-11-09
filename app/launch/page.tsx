@@ -129,16 +129,16 @@ export default function LaunchPage() {
     <div className="flex flex-col min-h-[calc(100vh-72px)] bg-black">
       <div className="flex flex-1 items-start justify-center pt-8" style={{ marginTop: '16px' }}>
         <div className="w-full max-w-lg p-0 shadow-none border-none bg-transparent">
-          <h1 className="text-2xl font-bold font-mono mb-8 text-white">Launch Token</h1>
+          <h1 className="text-2xl font-bold font-mono mb-8 text-foreground">Launch Token</h1>
           
           {wallet.connected ? (
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Image Upload */}
-              <div className="bg-[#23242a] rounded-2xl p-6">
+              <div className="bg-[#1a1a1a] rounded-2xl p-6 border border-white/10">
                 <div className="flex flex-col items-center justify-center space-y-3 mb-4">
                   <div 
                     onClick={handleImageClick}
-                    className="w-32 h-32 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 transform hover:scale-105 bg-[#181A20] border-2 border-[#35363c]"
+                    className="w-32 h-32 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 transform hover:scale-105 bg-black border-2 border-primary/20 hover:border-primary/40"
                   >
                     {tokenImage ? (
                       <Image 
@@ -149,7 +149,7 @@ export default function LaunchPage() {
                         className="object-cover rounded-full w-full h-full aspect-square"
                       />
                     ) : (
-                      <div className="text-center text-white">
+                      <div className="text-center text-foreground">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mx-auto mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
@@ -164,39 +164,39 @@ export default function LaunchPage() {
                       onChange={handleImageUpload}
                     />
                   </div>
-                  <p className="text-xs text-center text-[#b5b5b5] font-bold">
+                  <p className="text-xs text-center text-foreground/60 font-bold">
                     Recommended: 512x512px PNG or JPG
                   </p>
                 </div>
                 
                 <div className="space-y-4">
                   <div className="space-y-1.5">
-                    <label className="block text-sm text-white font-bold font-mono">Token Name</label>
+                    <label className="block text-sm text-foreground font-bold font-mono">Token Name</label>
                     <input
                       type="text"
                       value={tokenName}
                       onChange={(e) => setTokenName(e.target.value)}
                       placeholder="FunCoinName"
-                      className="w-full p-2.5 bg-[#181A20] border-2 border-[#35363c] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00ffb3] focus:border-transparent font-mono text-base text-white transition-all"
+                      className="w-full p-2.5 bg-black border-2 border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-mono text-base text-foreground transition-all"
                     />
                   </div>
                   
                   <div className="space-y-1.5">
-                    <label className="block text-sm text-white font-bold font-mono">Token Ticker</label>
+                    <label className="block text-sm text-foreground font-bold font-mono">Token Ticker</label>
                     <input
                       type="text"
                       value={tokenTicker}
                       onChange={(e) => setTokenTicker(e.target.value.toUpperCase())}
                       placeholder="FCN"
-                      className="w-full p-2.5 bg-[#181A20] border-2 border-[#35363c] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00ffb3] focus:border-transparent font-mono text-base uppercase text-white transition-all"
+                      className="w-full p-2.5 bg-black border-2 border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-mono text-base uppercase text-foreground transition-all"
                     />
-                    <p className="text-xs text-[#b5b5b5] font-bold">
+                    <p className="text-xs text-foreground/60 font-bold">
                       3-5 characters recommended, uppercase
                     </p>
                   </div>
                   
                   <div className="space-y-1.5">
-                    <label className="block text-sm text-white font-bold font-mono">Initial SOL Amount</label>
+                    <label className="block text-sm text-foreground font-bold font-mono">Initial SOL Amount</label>
                     <div className="relative">
                       <input
                         type="text"
@@ -206,21 +206,21 @@ export default function LaunchPage() {
                           setVirtualLiquidity(value);
                         }}
                         placeholder="100"
-                        className="w-full p-2.5 bg-[#181A20] border-2 border-[#35363c] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00ffb3] focus:border-transparent font-mono text-base pr-12 text-white transition-all"
+                        className="w-full p-2.5 bg-black border-2 border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-mono text-base pr-12 text-foreground transition-all"
                       />
-                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white font-bold font-mono text-sm">SOL</div>
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-foreground font-bold font-mono text-sm">SOL</div>
                     </div>
-                    <p className="text-xs text-[#b5b5b5] font-bold">
+                    <p className="text-xs text-foreground/60 font-bold">
                       Initial liquidity for the pool
                     </p>
                   </div>
 
                   {/* Optional Fields Toggle */}
-                  <div className="pt-4 border-t border-[#35363c]">
+                  <div className="pt-4 border-t border-white/10">
                     <button
                       type="button"
                       onClick={() => setShowOptional(!showOptional)}
-                      className="flex items-center gap-2 text-[#b5b5b5] hover:text-white transition-colors font-mono text-sm"
+                      className="flex items-center gap-2 text-foreground/60 hover:text-foreground transition-colors font-mono text-sm"
                     >
                       {showOptional ? 'Hide' : 'Show'} more options
                       <svg 
@@ -243,35 +243,35 @@ export default function LaunchPage() {
                     {showOptional && (
                       <div className="space-y-4 mt-4">
                         <div className="space-y-1.5">
-                          <label className="block text-sm text-white font-bold font-mono">Website (Optional)</label>
+                          <label className="block text-sm text-foreground font-bold font-mono">Website (Optional)</label>
                           <input
                             type="url"
                             value={website}
                             onChange={(e) => setWebsite(e.target.value)}
                             placeholder="https://yourwebsite.com"
-                            className="w-full p-2.5 bg-[#181A20] border-2 border-[#35363c] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00ffb3] focus:border-transparent font-mono text-base text-white transition-all"
+                            className="w-full p-2.5 bg-black border-2 border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-mono text-base text-foreground transition-all"
                           />
                         </div>
 
                         <div className="space-y-1.5">
-                          <label className="block text-sm text-white font-bold font-mono">Twitter (Optional)</label>
+                          <label className="block text-sm text-foreground font-bold font-mono">Twitter (Optional)</label>
                           <input
                             type="text"
                             value={twitter}
                             onChange={(e) => setTwitter(e.target.value)}
                             placeholder="@yourtwitter"
-                            className="w-full p-2.5 bg-[#181A20] border-2 border-[#35363c] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00ffb3] focus:border-transparent font-mono text-base text-white transition-all"
+                            className="w-full p-2.5 bg-black border-2 border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-mono text-base text-foreground transition-all"
                           />
                         </div>
 
                         <div className="space-y-1.5">
-                          <label className="block text-sm text-white font-bold font-mono">Telegram (Optional)</label>
+                          <label className="block text-sm text-foreground font-bold font-mono">Telegram (Optional)</label>
                           <input
                             type="text"
                             value={telegram}
                             onChange={(e) => setTelegram(e.target.value)}
                             placeholder="https://t.me/yourgroup"
-                            className="w-full p-2.5 bg-[#181A20] border-2 border-[#35363c] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00ffb3] focus:border-transparent font-mono text-base text-white transition-all"
+                            className="w-full p-2.5 bg-black border-2 border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-mono text-base text-foreground transition-all"
                           />
                         </div>
                       </div>
@@ -283,7 +283,7 @@ export default function LaunchPage() {
               <div className="flex justify-end">
                 <a 
                   href="/docs/launch" 
-                  className="text-[#00ffb3] hover:text-[#00d49c] font-mono text-sm transition-colors"
+                  className="text-primary hover:opacity-80 font-mono text-sm transition"
                 >
                   How it works →
                 </a>
@@ -291,25 +291,26 @@ export default function LaunchPage() {
               
               <button
                 type="submit"
-                className="w-full p-4 rounded-2xl font-bold text-base transition-all duration-300 transform hover:scale-105 hover:shadow-lg font-mono bg-[#00ffb3] text-black cursor-pointer"
+                disabled={isSubmitting}
+                className="w-full p-4 rounded-2xl font-bold text-base transition-all duration-300 transform hover:scale-105 hover:shadow-lg font-mono bg-primary hover:opacity-90 text-black cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 🚀 Launch Token 🚀
               </button>
             </form>
           ) : (
-            <div className="p-8 flex flex-col items-center space-y-4 bg-[#23242a] rounded-2xl">
-              <div className="text-center p-4 rounded-lg bg-[#181A20] border border-[#35363c]">
-                <h2 className="text-xl font-bold mb-2 text-white">Ready to create the next big meme?</h2>
-                <p className="text-base text-white font-mono mb-4">
+            <div className="p-8 flex flex-col items-center space-y-4 bg-[#1a1a1a] rounded-2xl border border-white/10">
+              <div className="text-center p-4 rounded-lg bg-black border border-primary/20">
+                <h2 className="text-xl font-bold mb-2 text-foreground">Ready to create the next big meme?</h2>
+                <p className="text-base text-foreground font-mono mb-4">
                   Connect your wallet to launch a token
                 </p>
                 <WalletButton />
               </div>
               
               <div className="flex space-x-3 mt-4">
-                <div className="w-2 h-2 rounded-full bg-[#00ffb3] animate-pulse"></div>
-                <div className="w-2 h-2 rounded-full bg-[#00ffb3] animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                <div className="w-2 h-2 rounded-full bg-[#00ffb3] animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+                <div className="w-2 h-2 rounded-full bg-secondary animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                <div className="w-2 h-2 rounded-full bg-accent animate-pulse" style={{ animationDelay: '0.4s' }}></div>
               </div>
             </div>
           )}

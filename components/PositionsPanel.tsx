@@ -222,20 +222,20 @@ export default function PositionsPanel({ isOpen, onClose, tokenYMint }: Position
 
   return (
     <div
-      className={`fixed top-0 right-0 h-full w-96 bg-[#23242a] transform transition-transform duration-300 ease-in-out ${
+      className={`fixed top-0 right-0 h-full w-96 bg-[#1a1a1a] transform transition-transform duration-300 ease-in-out ${
         isOpen ? 'translate-x-0' : 'translate-x-full'
-      } shadow-2xl z-50 rounded-l-2xl`}
+      } shadow-2xl z-50 rounded-l-2xl border-l border-white/10`}
     >
       <div className="flex flex-col h-full">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-[#35363c]">
-          <h2 className="text-xl font-bold font-mono text-white">Positions</h2>
+        <div className="flex items-center justify-between p-4 border-b border-white/10">
+          <h2 className="text-xl font-bold font-mono text-foreground">Positions</h2>
           <button
             type="button"
             onClick={onClose}
-            className="p-2 hover:bg-[#35363c] rounded-full transition-colors"
+            className="p-2 hover:bg-white/5 rounded-full transition-colors"
           >
-            <XMarkIcon className="w-6 h-6 text-white" />
+            <XMarkIcon className="w-6 h-6 text-foreground" />
           </button>
         </div>
 
@@ -243,35 +243,35 @@ export default function PositionsPanel({ isOpen, onClose, tokenYMint }: Position
         <div className="flex-1 overflow-y-auto p-4">
           {isLoading ? (
             <div className="flex items-center justify-center h-full">
-              <div className="text-white">Loading positions...</div>
+              <div className="text-foreground">Loading positions...</div>
             </div>
           ) : positions.length === 0 ? (
             <div className="flex items-center justify-center h-full">
-              <div className="text-[#b5b5b5]">No positions found</div>
+              <div className="text-foreground/60">No positions found</div>
             </div>
           ) : (
             <div className="space-y-4">
               {positions.map((position, index) => (
                 <div
                   key={index}
-                  className="bg-[#1a1b20] rounded-2xl p-4 space-y-3"
+                  className="bg-black rounded-2xl p-4 space-y-3 border border-white/10"
                 >
                   {/* Main Info - Always Visible */}
                   <div className="flex justify-between items-center">
-                    <span className="text-[#b5b5b5] text-sm">Size</span>
-                    <span className="text-white font-mono">{position.formattedSize} {position.isLong ? tokenMetadata?.symbol || 'TOKEN' : 'SOL'}</span>
+                    <span className="text-foreground/60 text-sm">Size</span>
+                    <span className="text-foreground font-mono">{position.formattedSize} {position.isLong ? tokenMetadata?.symbol || 'TOKEN' : 'SOL'}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-[#b5b5b5] text-sm">Collateral</span>
-                    <span className="text-white font-mono">{position.formattedCollateral} {position.isLong ? 'SOL' : tokenMetadata?.symbol || 'TOKEN'}</span>
+                    <span className="text-foreground/60 text-sm">Collateral</span>
+                    <span className="text-foreground font-mono">{position.formattedCollateral} {position.isLong ? 'SOL' : tokenMetadata?.symbol || 'TOKEN'}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-[#b5b5b5] text-sm">Leverage</span>
-                    <span className="text-white font-mono">{position.formattedLeverage}x</span>
+                    <span className="text-foreground/60 text-sm">Leverage</span>
+                    <span className="text-primary font-mono">{position.formattedLeverage}x</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-[#b5b5b5] text-sm">PnL</span>
-                    <span className={`text-white font-mono ${poolData ? (() => {
+                    <span className="text-foreground/60 text-sm">PnL</span>
+                    <span className={`font-mono ${poolData ? (() => {
                       // Calculate multiple and derive percentage from it
                       let outputUsd = 0;
                       let collateralUsd = 0;
@@ -336,7 +336,7 @@ export default function PositionsPanel({ isOpen, onClose, tokenYMint }: Position
                         }
                       }
                     }}
-                    className="text-xs text-[#b5b5b5] hover:text-white cursor-pointer flex items-center gap-1 transition-colors"
+                    className="text-xs text-foreground/60 hover:text-foreground cursor-pointer flex items-center gap-1 transition-colors"
                   >
                     <span>More details</span>
                     <svg 
@@ -352,16 +352,16 @@ export default function PositionsPanel({ isOpen, onClose, tokenYMint }: Position
 
                   <button
                     onClick={() => handleClosePosition(position)}
-                    className="w-full py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl font-mono text-sm transition-colors"
+                    className="w-full py-2 bg-secondary hover:opacity-90 text-black rounded-xl font-mono text-sm transition font-bold"
                   >
                     Close Position
                   </button>
 
                   {/* Additional Details - Hidden by Default */}
-                  <div id={`position-details-${index}`} className="hidden space-y-3 pt-2 border-t border-[#35363c]">
+                  <div id={`position-details-${index}`} className="hidden space-y-3 pt-2 border-t border-white/10">
                     <div className="flex justify-between items-center">
-                      <span className="text-[#b5b5b5] text-sm">Entry Price</span>
-                      <span className="text-white font-mono">
+                      <span className="text-foreground/60 text-sm">Entry Price</span>
+                      <span className="text-foreground font-mono">
                         ${calculatePositionEntryPrice(
                           position.rawSize,
                           position.rawCollateral,
@@ -372,8 +372,8 @@ export default function PositionsPanel({ isOpen, onClose, tokenYMint }: Position
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-[#b5b5b5] text-sm">Current Price</span>
-                      <span className="text-white font-mono">
+                      <span className="text-foreground/60 text-sm">Current Price</span>
+                      <span className="text-foreground font-mono">
                         ${poolData ? (calculateRealReservesPrice(poolData) * solPrice).toFixed(8) : '0.00'}
                       </span>
                     </div>

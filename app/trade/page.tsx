@@ -24,12 +24,12 @@ function TradePageContent() {
 
   return (
     <>
-      <h1 className="text-2xl font-bold font-mono mb-8 text-white">Swap</h1>
+      <h1 className="text-2xl font-bold font-mono mb-8 text-foreground">Swap</h1>
       {wallet.connected ? (
         <SwapInterface initialOutputToken={initialOutputToken} />
       ) : (
-        <div className="p-8 flex flex-col items-center space-y-4">
-          <p className="text-center text-muted-foreground font-mono text-white">
+        <div className="p-8 flex flex-col items-center space-y-4 bg-[#1a1a1a] rounded-2xl border border-white/10">
+          <p className="text-center text-foreground font-mono">
             Connect your wallet to start trading
           </p>
           <WalletButton />

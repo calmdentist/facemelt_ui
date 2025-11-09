@@ -6,8 +6,8 @@ import { geistMono } from "./fonts";
 import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
-  title: "Facemelt - Leverage Trading AMM on Solana",
-  description: "The first AMM on Solana featuring leverage trading",
+  title: "FM",
+  description: "AMM/launchpad with leverage trading on Solana",
 };
 
 export default function RootLayout({
